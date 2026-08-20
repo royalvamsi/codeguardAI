@@ -1,0 +1,40 @@
+CODEGUARD AI — FINAL CALIBRATED TEST REPORT
+======================================================================
+
+Test Accuracy    : 85.2466%
+Macro Precision  : 0.6019
+Macro Recall     : 0.6154
+Macro F1 Score   : 0.6050
+Weighted F1 Score: 0.8523
+
+Detailed Classification Report:
+                   precision    recall  f1-score   support
+
+   AttributeError     0.3448    0.4545    0.3922        22
+         EOFError     0.7209    0.5849    0.6458        53
+       IndexError     0.5495    0.6757    0.6061        74
+         KeyError     0.6625    0.7361    0.6974        72
+        NameError     0.5580    0.5155    0.5359       485
+         No error     0.9185    0.9196    0.9191      5848
+   RecursionError     0.7143    0.6383    0.6742        47
+        TypeError     0.5040    0.4884    0.4961       387
+UnboundLocalError     0.4711    0.6129    0.5327        93
+       ValueError     0.5758    0.5278    0.5507        36
+
+         accuracy                         0.8525      7117
+        macro avg     0.6019    0.6154    0.6050      7117
+     weighted avg     0.8528    0.8525    0.8523      7117
+
+
+OOF Calibrated Thresholds Applied:
+            Class  OOF_Optimal_Threshold  OOF_Precision  OOF_Recall  OOF_F1  Train_Support
+   AttributeError                   0.22         0.4752      0.5275  0.5000             91
+         EOFError                   0.28         0.6757      0.5896  0.6297            212
+       IndexError                   0.26         0.4633      0.5541  0.5046            296
+         KeyError                   0.32         0.6811      0.7143  0.6973            287
+        NameError                   0.20         0.5130      0.5273  0.5201           1940
+         No error                   0.14         0.8781      0.9651  0.9195          23387
+   RecursionError                   0.34         0.6207      0.5714  0.5950            189
+        TypeError                   0.22         0.4761      0.5414  0.5067           1546
+UnboundLocalError                   0.26         0.4615      0.4987  0.4794            373
+       ValueError                   0.26         0.5315      0.5315  0.5315            143

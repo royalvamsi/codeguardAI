@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-08-20 20:54:44",
+  "methodology": "5-Fold Stratified CV on Train (Fresh pipeline per fold) -> OOF Threshold Tuning -> Single Evaluation on Test",
+  "train_samples": 28464,
+  "test_samples": 7117,
+  "num_classes": 10,
+  "classes": [
+    "AttributeError",
+    "EOFError",
+    "IndexError",
+    "KeyError",
+    "NameError",
+    "No error",
+    "RecursionError",
+    "TypeError",
+    "UnboundLocalError",
+    "ValueError"
+  ],
+  "baseline_metrics": {
+    "accuracy": 0.8384150625263453,
+    "macro_f1": 0.5749931776549685,
+    "weighted_f1": 0.8443204591024773
+  },
+  "calibrated_metrics": {
+    "accuracy": 0.8524659266544893,
+    "macro_precision": 0.6019392922650102,
+    "macro_recall": 0.615368343113814,
+    "macro_f1": 0.6050060694973312,
+    "weighted_f1": 0.8522752586937198
+  },
+  "oof_optimal_thresholds": {
+    "AttributeError": 0.22,
+    "EOFError": 0.28,
+    "IndexError": 0.26,
+    "KeyError": 0.32,
+    "NameError": 0.2,
+    "No error": 0.14,
+    "RecursionError": 0.34,
+    "TypeError": 0.22,
+    "UnboundLocalError": 0.26,
+    "ValueError": 0.26
+  }
+}

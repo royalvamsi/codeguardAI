@@ -1,0 +1,11 @@
+Class,OOF_Optimal_Threshold,OOF_Precision,OOF_Recall,OOF_F1,Train_Support
+AttributeError,0.22,0.4752,0.5275,0.5,91
+EOFError,0.28,0.6757,0.5896,0.6297,212
+IndexError,0.26,0.4633,0.5541,0.5046,296
+KeyError,0.32,0.6811,0.7143,0.6973,287
+NameError,0.2,0.513,0.5273,0.5201,1940
+No error,0.14,0.8781,0.9651,0.9195,23387
+RecursionError,0.34,0.6207,0.5714,0.595,189
+TypeError,0.22,0.4761,0.5414,0.5067,1546
+UnboundLocalError,0.26,0.4615,0.4987,0.4794,373
+ValueError,0.26,0.5315,0.5315,0.5315,143
