@@ -1,0 +1,18 @@
+Best Model: Linear SVM
+
+                   precision    recall  f1-score   support
+
+   AttributeError       0.29      0.59      0.39        22
+         EOFError       0.33      0.53      0.40        53
+       IndexError       0.26      0.66      0.37        74
+         KeyError       0.36      0.82      0.50        72
+        NameError       0.45      0.38      0.41       485
+         No error       0.91      0.82      0.86      5848
+   RecursionError       0.22      0.81      0.34        47
+        TypeError       0.32      0.35      0.34       387
+UnboundLocalError       0.29      0.61      0.39        93
+       ValueError       0.12      0.47      0.19        36
+
+         accuracy                           0.76      7117
+        macro avg       0.35      0.61      0.42      7117
+     weighted avg       0.81      0.76      0.78      7117

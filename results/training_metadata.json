@@ -1,0 +1,14 @@
+{
+    "best_model": "Linear SVM",
+    "random_state": 42,
+    "max_features": 30000,
+    "ngram_range": [
+        1,
+        2
+    ],
+    "min_df": 2,
+    "max_df": 0.98,
+    "training_samples": 28464,
+    "test_samples": 7117,
+    "feature_count": 12920
+}

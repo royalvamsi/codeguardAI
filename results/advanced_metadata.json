@@ -1,0 +1,22 @@
+{
+    "selected_model": "Experiment B (Hybrid TF-IDF + Linear SVM)",
+    "macro_f1": 0.5749931776549685,
+    "weighted_f1": 0.8443204591024773,
+    "accuracy": 0.8384150625263453,
+    "training_samples": 28464,
+    "test_samples": 7117,
+    "num_classes": 10,
+    "classes": [
+        "AttributeError",
+        "EOFError",
+        "IndexError",
+        "KeyError",
+        "NameError",
+        "No error",
+        "RecursionError",
+        "TypeError",
+        "UnboundLocalError",
+        "ValueError"
+    ],
+    "timestamp": "2026-08-20 18:27:47"
+}
