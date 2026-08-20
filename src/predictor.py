@@ -30,7 +30,18 @@ from src.suggestion_engine import get_suggestion
 
 MODEL_PATH = PROJECT_ROOT / "models" / "best_pipeline.pkl"
 
-ML_CONFIDENCE_THRESHOLD = 0.50
+# Calibrated decision thresholds derived from 5-Fold Out-of-Fold (OOF) cross-validation on train.csv
+CALIBRATED_THRESHOLDS: Dict[str, float] = {
+    "AttributeError": 0.22,
+    "EOFError": 0.28,
+    "IndexError": 0.26,
+    "KeyError": 0.32,
+    "NameError": 0.20,
+    "RecursionError": 0.34,
+    "TypeError": 0.22,
+    "UnboundLocalError": 0.26,
+    "ValueError": 0.26,
+}
 
 _pipeline = None
 
@@ -139,23 +150,76 @@ def predict_code(code: str) -> Dict[str, Any]:
     decision_scores = dict(sorted(decision_scores.items(), key=lambda item: item[1], reverse=True))
 
     # ========================================================
-    # ML Confidence Gate
+    # Stage 2B: Class-Specific Calibrated Threshold Gate
     # ========================================================
 
-    if str(prediction) == "No error" or confidence < ML_CONFIDENCE_THRESHOLD:
+    predicted_class = str(prediction)
+
+    # If top prediction is 'No error', return clean code
+    if predicted_class == "No error":
         return {
             "error_type": None,
             "confidence": confidence,
             "source": "machine_learning",
             "method_label": "Hybrid ML (Word + Char TF-IDF + Linear SVM)",
-            "confidence_label": f"{confidence * 100:.1f}% (Below Error Threshold)",
+            "confidence_label": f"{confidence * 100:.1f}% (Predicted Clean)",
+            "message": "No high-confidence error was detected in the submitted code.",
+            "suggestion": "The code appears valid based on the available static and machine-learning evidence.",
+            "decision_scores": decision_scores,
+            "explanation": {
+                "title": "No High-Confidence Error Detected",
+                "category": "Clean / Valid Code",
+                "description": "The machine-learning classifier identified this snippet as valid Python code.",
+                "common_causes": [],
+                "suggestions": [
+                    "Review runtime inputs and edge cases if the code depends on external data.",
+                    "Add unit tests for boundary conditions."
+                ]
+            },
+        }
+
+    # NameError is already handled deterministically by the
+    # static analyzer. If static analysis found no NameError,
+    # don't allow the ML model to override that result.
+    if predicted_class == "NameError" and static_res["error_type"] is None:
+        return {
+            "error_type": None,
+            "confidence": confidence,
+            "source": "machine_learning",
+            "method_label": "Hybrid ML (Static Name Resolution Override)",
+            "confidence_label": f"{confidence * 100:.1f}% (NameError Rejected)",
+            "message": "Static analysis found no unresolved identifier or invalid symbol reference.",
+            "suggestion": "The code appears valid based on deterministic symbol analysis.",
+            "decision_scores": decision_scores,
+            "explanation": {
+                "title": "No NameError Detected",
+                "category": "Clean / Static Symbol Verification",
+                "description": "The machine-learning classifier predicted NameError, but deterministic static analysis verified that identifiers are properly defined.",
+                "common_causes": [],
+                "suggestions": [
+                    "Review runtime-dependent names only if external execution context is involved.",
+                    "The submitted code passed static name-resolution checks."
+                ]
+            },
+        }
+
+    # Top prediction is an error class: verify against calibrated threshold T_c*
+    required_threshold = CALIBRATED_THRESHOLDS.get(predicted_class, 0.25)
+
+    if confidence < required_threshold:
+        return {
+            "error_type": None,
+            "confidence": confidence,
+            "source": "machine_learning",
+            "method_label": "Hybrid ML (Word + Char TF-IDF + Linear SVM)",
+            "confidence_label": f"{confidence * 100:.1f}% (Below {predicted_class} Threshold {required_threshold * 100:.0f}%)",
             "message": "No high-confidence error was detected in the submitted code.",
             "suggestion": "The code appears valid based on the available static and machine-learning evidence.",
             "decision_scores": decision_scores,
             "explanation": {
                 "title": "No High-Confidence Error Detected",
                 "category": "Clean / Low-Confidence",
-                "description": "The machine-learning classifier did not produce a sufficiently confident error prediction.",
+                "description": f"Model candidate '{predicted_class}' decision confidence ({confidence * 100:.1f}%) did not reach the calibrated threshold ({required_threshold * 100:.0f}%).",
                 "common_causes": [],
                 "suggestions": [
                     "Review runtime inputs and edge cases if the code depends on external data.",
@@ -166,7 +230,7 @@ def predict_code(code: str) -> Dict[str, Any]:
 
     source = "machine_learning"
     method_label = "Hybrid ML (Word + Char TF-IDF + Linear SVM)"
-    confidence_label = f"{confidence * 100:.1f}% (Relative Decision Score)"
+    confidence_label = f"{confidence * 100:.1f}% (Calibrated Decision Score)"
 
     explanation = get_suggestion(str(prediction))
     message = explanation["description"]
